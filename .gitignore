@@ -1,0 +1,10 @@
+# Yerel ilan verileri — depo dışında tutulur
+data.json
+data.json.tmp
+
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc

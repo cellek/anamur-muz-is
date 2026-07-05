@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnamurMuzİş — Anamur Muz Sektörü İş İlanları</title>
+  <meta name="description" content="Anamur muz sektörü için iş ilanları. İşverenler ilan verir, işçiler müsaitliklerini paylaşır.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🍌</span>
+        <div>
+          <h1>AnamurMuzİş</h1>
+          <p class="tagline">Anamur muz sektörü iş &amp; işçi ilanları</p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" id="tab-jobs" role="tab" aria-selected="true" data-tab="jobs">
+          İş İlanları <span class="count" id="count-jobs">0</span>
+        </button>
+        <button class="tab" id="tab-workers" role="tab" aria-selected="false" data-tab="workers">
+          İş Arayanlar <span class="count" id="count-workers">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- ===== İŞ İLANLARI (işveren ilanları) ===== -->
+    <section id="panel-jobs" class="panel" role="tabpanel">
+      <div class="panel-bar">
+        <div class="filters">
+          <input type="search" id="job-search" placeholder="Ara: hasat, Ören, paketleme…" aria-label="İlanlarda ara">
+          <select id="job-filter-type" aria-label="İş türüne göre filtrele">
+            <option value="">Tüm iş türleri</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="btn-new-job">+ İlan Ver (İşveren)</button>
+      </div>
+      <div id="job-list" class="card-list" aria-live="polite"></div>
+      <p id="job-empty" class="empty hidden">Bu kritere uygun ilan bulunamadı.</p>
+    </section>
+
+    <!-- ===== İŞ ARAYANLAR (işçi müsaitlik ilanları) ===== -->
+    <section id="panel-workers" class="panel hidden" role="tabpanel">
+      <div class="panel-bar">
+        <div class="filters">
+          <input type="search" id="worker-search" placeholder="Ara: hasat, deneyim, mahalle…" aria-label="İşçi ilanlarında ara">
+          <select id="worker-filter-type" aria-label="İş türüne göre filtrele">
+            <option value="">Tüm iş türleri</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="btn-new-worker">+ Müsaitlik Bildir (İşçi)</button>
+      </div>
+      <div id="worker-list" class="card-list" aria-live="polite"></div>
+      <p id="worker-empty" class="empty hidden">Bu kritere uygun kayıt bulunamadı.</p>
+    </section>
+  </main>
+
+  <!-- ===== İŞVEREN İLAN FORMU ===== -->
+  <dialog id="job-dialog">
+    <form id="job-form" method="dialog" novalidate>
+      <h2>Yeni İş İlanı</h2>
+      <p class="form-hint">Muz bahçeniz veya tesisiniz için işçi arayın. <span class="req">*</span> zorunlu alanlar.</p>
+
+      <label>İlan başlığı <span class="req">*</span>
+        <input name="title" required maxlength="120" placeholder="Örn: Muz hasadı için 4 işçi aranıyor">
+      </label>
+      <div class="form-row">
+        <label>İşveren / işletme adı <span class="req">*</span>
+          <input name="employer" required maxlength="80" placeholder="Örn: Demir Tarım">
+        </label>
+        <label>Konum (mahalle/köy) <span class="req">*</span>
+          <input name="location" required maxlength="80" placeholder="Örn: Ören, Kaledran…">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>İş türü <span class="req">*</span>
+          <select name="workType" required id="job-form-type"></select>
+        </label>
+        <label>Ücret <span class="req">*</span>
+          <input name="wage" required maxlength="80" placeholder="Örn: Günlük 900 TL + yemek">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Kaç işçi gerekli?
+          <input name="workersNeeded" type="number" min="1" max="999" value="1">
+        </label>
+        <label>Başlangıç tarihi
+          <input name="startDate" type="date">
+        </label>
+        <label>Süre
+          <input name="duration" maxlength="60" placeholder="Örn: 2 hafta / Sürekli">
+        </label>
+      </div>
+      <label>Telefon <span class="req">*</span>
+        <input name="phone" required maxlength="30" inputmode="tel" placeholder="Örn: 0532 123 45 67">
+      </label>
+      <label>Açıklama
+        <textarea name="description" maxlength="600" rows="3" placeholder="Servis, yemek, konaklama, aranan nitelikler…"></textarea>
+      </label>
+
+      <p class="form-error hidden" id="job-form-error"></p>
+      <div class="form-actions">
+        <button type="button" class="btn" data-close>Vazgeç</button>
+        <button type="submit" class="btn btn-primary">İlanı Yayınla</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ===== İŞÇİ MÜSAİTLİK FORMU ===== -->
+  <dialog id="worker-dialog">
+    <form id="worker-form" method="dialog" novalidate>
+      <h2>Müsaitlik Bildir</h2>
+      <p class="form-hint">İşverenlerin sizi bulabilmesi için bilgilerinizi paylaşın. <span class="req">*</span> zorunlu alanlar.</p>
+
+      <label>Ad Soyad <span class="req">*</span>
+        <input name="name" required maxlength="80" placeholder="Örn: Ahmet Yılmaz">
+      </label>
+      <fieldset>
+        <legend>Yapabildiğiniz işler <span class="req">*</span></legend>
+        <div class="checkbox-grid" id="worker-form-types"></div>
+      </fieldset>
+      <div class="form-row">
+        <label>Konum <span class="req">*</span>
+          <input name="location" required maxlength="80" placeholder="Örn: Anamur Merkez">
+        </label>
+        <label>Müsait olduğu tarih
+          <input name="availableFrom" type="date">
+        </label>
+      </div>
+      <div class="form-row">
+        <label>Beklenen ücret
+          <input name="expectedWage" maxlength="80" placeholder="Örn: Günlük 850 TL">
+        </label>
+        <label>Telefon <span class="req">*</span>
+          <input name="phone" required maxlength="30" inputmode="tel" placeholder="Örn: 0532 123 45 67">
+        </label>
+      </div>
+      <label>Deneyim
+        <input name="experience" maxlength="200" placeholder="Örn: 5 yıl sera muz hasadı deneyimi">
+      </label>
+      <label>Not
+        <textarea name="note" maxlength="600" rows="3" placeholder="Ulaşım durumu, çalışabileceğiniz bölgeler…"></textarea>
+      </label>
+
+      <p class="form-error hidden" id="worker-form-error"></p>
+      <div class="form-actions">
+        <button type="button" class="btn" data-close>Vazgeç</button>
+        <button type="submit" class="btn btn-primary">Yayınla</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>AnamurMuzİş · Anamur, Mersin · Muz sektörü işçi ve işveren buluşma noktası</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
