@@ -110,6 +110,30 @@
     return a;
   }
 
+  // "0532 123 45 67" -> "905321234567" (wa.me uluslararası format ister)
+  function toWhatsAppNumber(phone) {
+    let digits = phone.replace(/\D/g, "");
+    if (digits.startsWith("00")) digits = digits.slice(2);   // 0090… -> 90…
+    if (digits.startsWith("0")) digits = "9" + digits;       // 05xx  -> 905xx
+    else if (digits.startsWith("5")) digits = "90" + digits; // 5xx   -> 905xx
+    return digits;
+  }
+
+  function whatsappLink(phone, message) {
+    const a = el("a", "wa-btn");
+    a.append(el("span", "wa-icon", "✆"), document.createTextNode("WhatsApp"));
+    a.href = "https://wa.me/" + toWhatsAppNumber(phone) + "?text=" + encodeURIComponent(message);
+    a.target = "_blank";
+    a.rel = "noopener";
+    return a;
+  }
+
+  function contactButtons(phone, message) {
+    const wrap = el("div", "contact-btns");
+    wrap.append(whatsappLink(phone, message), callLink(phone));
+    return wrap;
+  }
+
   async function fetchJSON(url, options) {
     const res = await fetch(url, options);
     const body = await res.json().catch(() => ({}));
@@ -141,7 +165,8 @@
 
     const foot = el("div", "card-foot");
     const time = el("time", null, "İlan tarihi: " + formatDate(job.createdAt));
-    foot.append(time, callLink(job.phone));
+    const message = "Merhaba, AnamurMuzİş'te gördüğüm \"" + job.title + "\" ilanınız hakkında bilgi almak istiyorum.";
+    foot.append(time, contactButtons(job.phone, message));
     card.append(foot);
     return card;
   }
@@ -169,7 +194,8 @@
     if (w.note) card.append(el("p", "desc", w.note));
 
     const foot = el("div", "card-foot");
-    foot.append(el("time", null, "Kayıt tarihi: " + formatDate(w.createdAt)), callLink(w.phone));
+    const message = "Merhaba " + w.name + ", AnamurMuzİş'teki ilanınızı gördüm. İş teklifim için size ulaşmak istiyorum.";
+    foot.append(el("time", null, "Kayıt tarihi: " + formatDate(w.createdAt)), contactButtons(w.phone, message));
     card.append(foot);
     return card;
   }
