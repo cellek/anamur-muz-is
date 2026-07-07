@@ -15,6 +15,9 @@
 
   const state = { jobs: [], workers: [] };
 
+  const FACEBOOK_GROUP_URL = "https://www.facebook.com/groups/muzureticileri";
+  const SITE_URL = "https://cellek.github.io/anamur-muz-is/";
+
   // API yoksa (ör. GitHub Pages gibi statik barındırma) localStorage kullanılır.
   let staticMode = false;
   const STORAGE_KEY = "anamurmuzis-data";
@@ -128,10 +131,93 @@
     return a;
   }
 
-  function contactButtons(phone, message) {
+  function contactButtons(phone, message, shareText) {
     const wrap = el("div", "contact-btns");
-    wrap.append(whatsappLink(phone, message), callLink(phone));
+    wrap.append(callLink(phone), whatsappLink(phone, message), fbShareButton(shareText));
     return wrap;
+  }
+
+  // ---------- Facebook grubunda paylaşım ----------
+  // Facebook, grup gönderilerinin önceden doldurulmasına izin vermez;
+  // bu yüzden ilan metni panoya kopyalanır ve grup yeni sekmede açılır.
+  let toastTimer;
+  function toast(msg) {
+    let t = document.getElementById("toast");
+    if (!t) {
+      t = el("div");
+      t.id = "toast";
+      document.body.append(t);
+    }
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 4000);
+  }
+
+  async function copyText(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch (err) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.append(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand("copy"); } catch (e2) { /* kopyalanamadı */ }
+      ta.remove();
+      return ok;
+    }
+  }
+
+  function fbShareButton(shareText) {
+    const btn = el("button", "fb-btn");
+    btn.type = "button";
+    btn.append(el("span", "fb-icon", "f"), document.createTextNode("Grupta Paylaş"));
+    btn.title = "İlan metnini kopyalar ve Muz Üreticileri Facebook grubunu açar";
+    btn.addEventListener("click", async () => {
+      const copied = await copyText(shareText);
+      toast(copied
+        ? "İlan metni kopyalandı ✓ Açılan grupta gönderi kutusuna yapıştırın."
+        : "Kopyalama yapılamadı — ilan metnini elle yazmanız gerekebilir.");
+      window.open(FACEBOOK_GROUP_URL, "_blank", "noopener");
+    });
+    return btn;
+  }
+
+  function jobShareText(job) {
+    const lines = [
+      "🍌 İŞ İLANI — AnamurMuzİş",
+      job.title,
+      "İşveren: " + job.employer + " (" + job.location + ")",
+      "İş türü: " + job.workType + " | Ücret: " + job.wage,
+    ];
+    const extra = [];
+    if (job.workersNeeded) extra.push("İşçi sayısı: " + job.workersNeeded);
+    if (job.startDate) extra.push("Başlangıç: " + formatDate(job.startDate));
+    if (job.duration) extra.push("Süre: " + job.duration);
+    if (extra.length) lines.push(extra.join(" | "));
+    if (job.description) lines.push(job.description);
+    lines.push("📞 " + job.phone, "Tüm ilanlar: " + SITE_URL);
+    return lines.join("\n");
+  }
+
+  function workerShareText(w) {
+    const lines = [
+      "🍌 İŞ ARIYORUM — AnamurMuzİş",
+      w.name + " — " + w.location,
+      "Yapabildiği işler: " + (w.workTypes || []).join(", "),
+    ];
+    const extra = [];
+    if (w.experience) extra.push("Deneyim: " + w.experience);
+    if (w.availableFrom) extra.push("Müsait: " + formatDate(w.availableFrom));
+    if (w.expectedWage) extra.push("Beklenen ücret: " + w.expectedWage);
+    if (extra.length) lines.push(extra.join(" | "));
+    if (w.note) lines.push(w.note);
+    lines.push("📞 " + w.phone, "Tüm ilanlar: " + SITE_URL);
+    return lines.join("\n");
   }
 
   async function fetchJSON(url, options) {
@@ -166,7 +252,7 @@
     const foot = el("div", "card-foot");
     const time = el("time", null, "İlan tarihi: " + formatDate(job.createdAt));
     const message = "Merhaba, AnamurMuzİş'te gördüğüm \"" + job.title + "\" ilanınız hakkında bilgi almak istiyorum.";
-    foot.append(time, contactButtons(job.phone, message));
+    foot.append(time, contactButtons(job.phone, message, jobShareText(job)));
     card.append(foot);
     return card;
   }
@@ -195,7 +281,7 @@
 
     const foot = el("div", "card-foot");
     const message = "Merhaba " + w.name + ", AnamurMuzİş'teki ilanınızı gördüm. İş teklifim için size ulaşmak istiyorum.";
-    foot.append(el("time", null, "Kayıt tarihi: " + formatDate(w.createdAt)), contactButtons(w.phone, message));
+    foot.append(el("time", null, "Kayıt tarihi: " + formatDate(w.createdAt)), contactButtons(w.phone, message, workerShareText(w)));
     card.append(foot);
     return card;
   }
