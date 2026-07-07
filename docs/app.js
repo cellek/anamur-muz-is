@@ -18,9 +18,52 @@
   const FACEBOOK_GROUP_URL = "https://www.facebook.com/groups/muzureticileri";
   const SITE_URL = "https://cellek.github.io/anamur-muz-is/";
 
-  // API yoksa (ör. GitHub Pages gibi statik barındırma) localStorage kullanılır.
+  // Veri katmanı öncelik sırası:
+  // 1) Supabase (config.js dolduysa) — kalıcı, tüm cihazlarda ortak
+  // 2) Yerel Python API'si (geliştirme)
+  // 3) localStorage (yalnızca çevrimdışı/demo yedeği)
   let staticMode = false;
   const STORAGE_KEY = "anamurmuzis-data";
+
+  const cfg = window.APP_CONFIG || {};
+  const sb = (cfg.supabaseUrl && cfg.supabaseAnonKey && window.supabase)
+    ? window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey)
+    : null;
+
+  // Veritabanı snake_case, uygulama camelCase kullanır; select takma
+  // adlarıyla (alias) okuma, toRow dönüştürücüleriyle yazma yapılır.
+  const JOB_COLS = "id, title, employer, location, workType:work_type, wage, " +
+    "workersNeeded:workers_needed, startDate:start_date, duration, phone, description, createdAt:created_at";
+  const WORKER_COLS = "id, name, workTypes:work_types, experience, availableFrom:available_from, " +
+    "expectedWage:expected_wage, location, phone, note, createdAt:created_at";
+
+  function jobToRow(p) {
+    return {
+      title: p.title,
+      employer: p.employer,
+      location: p.location,
+      work_type: p.workType,
+      wage: p.wage,
+      workers_needed: Math.max(1, Math.min(999, parseInt(p.workersNeeded, 10) || 1)),
+      start_date: p.startDate || null,
+      duration: p.duration || null,
+      phone: p.phone,
+      description: p.description || null,
+    };
+  }
+
+  function workerToRow(p) {
+    return {
+      name: p.name,
+      work_types: p.workTypes,
+      experience: p.experience || null,
+      available_from: p.availableFrom || null,
+      expected_wage: p.expectedWage || null,
+      location: p.location,
+      phone: p.phone,
+      note: p.note || null,
+    };
+  }
 
   const STATIC_SEED = {
     jobs: [
@@ -358,10 +401,15 @@
   }
 
   // ---------- formlar ----------
-  function setupDialog(dialogSel, openBtnSel, formSel, errorSel, endpoint, buildPayload, onSaved) {
+  function setupDialog(dialogSel, openBtnSel, formSel, errorSel, opts, buildPayload, onSaved) {
     const dialog = $(dialogSel);
     const form = $(formSel);
     const errorBox = $(errorSel);
+
+    function validateLocally(payload) {
+      if (!form.checkValidity()) throw new Error("Zorunlu alanlar eksik");
+      if (payload.workTypes && payload.workTypes.length === 0) throw new Error("Zorunlu alanlar eksik");
+    }
 
     $(openBtnSel).addEventListener("click", () => {
       form.reset();
@@ -379,14 +427,18 @@
       try {
         let saved;
         if (staticMode) {
-          if (!form.checkValidity()) throw new Error("Zorunlu alanlar eksik");
-          if (payload.workTypes && payload.workTypes.length === 0) throw new Error("Zorunlu alanlar eksik");
+          validateLocally(payload);
           saved = Object.assign({}, payload, {
             id: "local-" + Date.now().toString(36),
             createdAt: new Date().toISOString(),
           });
+        } else if (sb) {
+          validateLocally(payload);
+          const res = await sb.from(opts.table).insert(opts.toRow(payload)).select(opts.cols).single();
+          if (res.error) throw new Error(res.error.message);
+          saved = res.data;
         } else {
-          saved = await fetchJSON(endpoint, {
+          saved = await fetchJSON(opts.endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -405,13 +457,15 @@
   }
 
   setupDialog(
-    "#job-dialog", "#btn-new-job", "#job-form", "#job-form-error", "/api/jobs",
+    "#job-dialog", "#btn-new-job", "#job-form", "#job-form-error",
+    { endpoint: "/api/jobs", table: "jobs", cols: JOB_COLS, toRow: jobToRow },
     (fd) => Object.fromEntries(fd.entries()),
     (saved) => { state.jobs.unshift(saved); renderJobs(); }
   );
 
   setupDialog(
-    "#worker-dialog", "#btn-new-worker", "#worker-form", "#worker-form-error", "/api/workers",
+    "#worker-dialog", "#btn-new-worker", "#worker-form", "#worker-form-error",
+    { endpoint: "/api/workers", table: "workers", cols: WORKER_COLS, toRow: workerToRow },
     (fd) => {
       const payload = Object.fromEntries(fd.entries());
       payload.workTypes = fd.getAll("workTypes");
@@ -430,14 +484,25 @@
   async function init() {
     fillTypeOptions();
     try {
-      const [jobs, workers] = await Promise.all([
-        fetchJSON("api/jobs"),
-        fetchJSON("api/workers"),
-      ]);
-      state.jobs = jobs;
-      state.workers = workers;
+      if (sb) {
+        const [j, w] = await Promise.all([
+          sb.from("jobs").select(JOB_COLS).order("created_at", { ascending: false }),
+          sb.from("workers").select(WORKER_COLS).order("created_at", { ascending: false }),
+        ]);
+        if (j.error || w.error) throw new Error((j.error || w.error).message);
+        state.jobs = j.data;
+        state.workers = w.data;
+      } else {
+        const [jobs, workers] = await Promise.all([
+          fetchJSON("api/jobs"),
+          fetchJSON("api/workers"),
+        ]);
+        state.jobs = jobs;
+        state.workers = workers;
+      }
     } catch (err) {
-      // API yok: statik barındırma (GitHub Pages) — localStorage'a geç.
+      // Veri kaynağına ulaşılamadı — localStorage yedeğine geç.
+      console.warn("Veri kaynağına ulaşılamadı, yerel depolamaya geçildi:", err.message);
       staticMode = true;
       const data = loadLocal();
       const byDate = (a, b) => (b.createdAt || "").localeCompare(a.createdAt || "");

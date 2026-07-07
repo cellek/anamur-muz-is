@@ -17,6 +17,22 @@ python3 server.py
 
 Ardından tarayıcıda **http://localhost:8756** adresini açın.
 
+## Canlı veritabanı (Supabase)
+
+Canlı sitede ilanların kalıcı olması ve tüm cihazlarda görünmesi için
+uygulama Supabase (Postgres) kullanır:
+
+1. [supabase.com](https://supabase.com) üzerinde proje oluşturun.
+2. Dashboard → **SQL Editor**'e `supabase/schema.sql` içeriğini yapıştırıp
+   çalıştırın (tablolar + güvenlik kuralları + örnek veriler).
+3. Dashboard → **Settings → API** bölümündeki *Project URL* ve
+   *anon public* anahtarını `docs/config.js` dosyasına yazın.
+
+`config.js` boşsa uygulama sırasıyla yerel Python API'sini, o da yoksa
+tarayıcı depolamasını (localStorage) kullanır. Güvenlik: istemciler yalnız
+okuma ve yeni ilan ekleme yapabilir (RLS); mevcut ilanlar istemciden
+değiştirilemez/silinemez.
+
 ## Teknik notlar
 
 - `server.py` — Python standart kütüphanesiyle yazılmış HTTP sunucusu.
