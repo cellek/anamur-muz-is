@@ -18,11 +18,11 @@
         </div>
       </div>
       <nav class="tabs" role="tablist">
-        <button class="tab active" id="tab-jobs" role="tab" aria-selected="true" data-tab="jobs">
-          İş İlanları <span class="count" id="count-jobs">0</span>
-        </button>
-        <button class="tab" id="tab-workers" role="tab" aria-selected="false" data-tab="workers">
+        <button class="tab active" id="tab-workers" role="tab" aria-selected="true" data-tab="workers">
           İş Arayanlar <span class="count" id="count-workers">0</span>
+        </button>
+        <button class="tab" id="tab-jobs" role="tab" aria-selected="false" data-tab="jobs">
+          İş İlanları <span class="count" id="count-jobs">0</span>
         </button>
       </nav>
     </div>
@@ -30,7 +30,7 @@
 
   <main class="container">
     <!-- ===== İŞ İLANLARI (işveren ilanları) ===== -->
-    <section id="panel-jobs" class="panel" role="tabpanel">
+    <section id="panel-jobs" class="panel hidden" role="tabpanel">
       <div class="panel-bar">
         <div class="filters">
           <input type="search" id="job-search" placeholder="Ara: hasat, Ören, paketleme…" aria-label="İlanlarda ara">
@@ -45,7 +45,7 @@
     </section>
 
     <!-- ===== İŞ ARAYANLAR (işçi müsaitlik ilanları) ===== -->
-    <section id="panel-workers" class="panel hidden" role="tabpanel">
+    <section id="panel-workers" class="panel" role="tabpanel">
       <div class="panel-bar">
         <div class="filters">
           <input type="search" id="worker-search" placeholder="Ara: hasat, deneyim, mahalle…" aria-label="İşçi ilanlarında ara">
