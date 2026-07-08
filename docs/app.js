@@ -16,7 +16,7 @@
   const state = { jobs: [], workers: [] };
 
   const FACEBOOK_GROUP_URL = "https://www.facebook.com/groups/muzureticileri";
-  const SITE_URL = "https://cellek.github.io/anamur-muz-is/";
+  const SITE_URL = "https://anamurmuzis.com/";
 
   // Veri katmanı öncelik sırası:
   // 1) Supabase (config.js dolduysa) — kalıcı, tüm cihazlarda ortak
