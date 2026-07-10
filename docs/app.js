@@ -18,6 +18,15 @@
   const FACEBOOK_GROUP_URL = "https://www.facebook.com/groups/muzureticileri";
   const SITE_URL = "https://anamurmuzis.com/";
 
+  // İlanlar yayınlandıktan 14 gün sonra listeden kalkar.
+  const AD_LIFETIME_DAYS = 14;
+  const AD_LIFETIME_MS = AD_LIFETIME_DAYS * 24 * 60 * 60 * 1000;
+
+  function notExpired(item) {
+    if (!item.createdAt) return true;
+    return Date.now() - new Date(item.createdAt).getTime() < AD_LIFETIME_MS;
+  }
+
   // Veri katmanı öncelik sırası:
   // 1) Supabase (config.js dolduysa) — kalıcı, tüm cihazlarda ortak
   // 2) Yerel Python API'si (geliştirme)
@@ -485,9 +494,10 @@
     fillTypeOptions();
     try {
       if (sb) {
+        const cutoff = new Date(Date.now() - AD_LIFETIME_MS).toISOString();
         const [j, w] = await Promise.all([
-          sb.from("jobs").select(JOB_COLS).order("created_at", { ascending: false }),
-          sb.from("workers").select(WORKER_COLS).order("created_at", { ascending: false }),
+          sb.from("jobs").select(JOB_COLS).gte("created_at", cutoff).order("created_at", { ascending: false }),
+          sb.from("workers").select(WORKER_COLS).gte("created_at", cutoff).order("created_at", { ascending: false }),
         ]);
         if (j.error || w.error) throw new Error((j.error || w.error).message);
         state.jobs = j.data;
@@ -509,6 +519,9 @@
       state.jobs = (data.jobs || []).sort(byDate);
       state.workers = (data.workers || []).sort(byDate);
     }
+    // Süresi dolan ilanları her veri kaynağında ele (API/localStorage yolları için).
+    state.jobs = state.jobs.filter(notExpired);
+    state.workers = state.workers.filter(notExpired);
     renderJobs();
     renderWorkers();
   }
