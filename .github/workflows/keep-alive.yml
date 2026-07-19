@@ -1,0 +1,25 @@
+# Supabase'in 7 gün hareketsizlik sonrası ücretsiz projeleri durdurmasını
+# önlemek için veritabanına günde bir hafif sorgu atar.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # her gün 06:17 UTC (09:17 TSİ)
+  workflow_dispatch: # elle tetikleme (test için)
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Veritabanina ping at
+        env:
+          # anon key zaten herkese açık (docs/config.js) — sır değildir.
+          SUPABASE_URL: https://wsnodkkvyubtvqcxrspl.supabase.co
+          SUPABASE_ANON_KEY: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indzbm9ka2t2eXVidHZxY3hyc3BsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM1MTA4NDEsImV4cCI6MjA5OTA4Njg0MX0.geanf5ReS08XX4OsLV9m6xNOIxcjRGsEM7E9ZCOWLwU
+        run: |
+          code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 \
+            "$SUPABASE_URL/rest/v1/jobs?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "Supabase yaniti: HTTP $code"
+          test "$code" = "200"
