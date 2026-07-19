@@ -1,0 +1,58 @@
+[
+  {
+    "id": "a03cfef8-f613-402a-ac6c-e93756f04924",
+    "title": "Paketleme tesisine eleman alınacak",
+    "employer": "Anamur Muz Paketleme",
+    "location": "Bahçelievler",
+    "work_type": "Paketleme",
+    "wage": "Aylık 26.000 TL, sigortalı",
+    "workers_needed": 3,
+    "start_date": "2026-07-15",
+    "duration": "Sürekli",
+    "phone": "0532 000 00 02",
+    "description": "Muz paketleme ve etiketleme. Kadın-erkek eleman alınacaktır.",
+    "created_at": "2026-07-08T12:53:52.990243+00:00"
+  },
+  {
+    "id": "84caf3b5-71da-49cc-83f4-21f2308720e0",
+    "title": "Muz hasadı için 5 işçi aranıyor",
+    "employer": "Yılmaz Tarım",
+    "location": "Ören Mahallesi",
+    "work_type": "Hasat",
+    "wage": "Günlük 900 TL + yemek",
+    "workers_needed": 5,
+    "start_date": "2026-07-10",
+    "duration": "2 hafta",
+    "phone": "0532 000 00 01",
+    "description": "Sera muz hasadı. Deneyimli işçiler tercih edilir. Servis mevcuttur.",
+    "created_at": "2026-07-08T12:53:52.990243+00:00"
+  },
+  {
+    "id": "706dfc6f-784b-4fb7-90a3-586f03fe4ec5",
+    "title": "Supabase test — sera bakımı için işçi aranıyor",
+    "employer": "Cellek Tarım",
+    "location": "Kaledran",
+    "work_type": "Sera İşleri",
+    "wage": "Günlük 950 TL",
+    "workers_needed": 1,
+    "start_date": null,
+    "duration": null,
+    "phone": "0532 999 88 77",
+    "description": null,
+    "created_at": "2026-07-08T12:58:18.073368+00:00"
+  },
+  {
+    "id": "6d2007e7-752b-4881-ae48-e49fa2c16787",
+    "title": "Sera işçisi",
+    "employer": "Veysel tarim",
+    "location": "Merkez",
+    "work_type": "Hasat",
+    "wage": "3000 TL",
+    "workers_needed": 1,
+    "start_date": "2026-07-15",
+    "duration": "2 gün",
+    "phone": "0532 100 10 10 ",
+    "description": null,
+    "created_at": "2026-07-08T13:04:17.464101+00:00"
+  }
+]

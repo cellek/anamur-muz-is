@@ -1,0 +1,129 @@
+[
+  {
+    "id": "d4b2f016-ff24-42df-b312-b21bc090b815",
+    "name": "Mehmet K.",
+    "work_types": [
+      "Hasat",
+      "Bakım / İlaçlama"
+    ],
+    "experience": "8 yıl sera muz deneyimi",
+    "available_from": "2026-07-07",
+    "expected_wage": "Günlük 850 TL",
+    "location": "Anamur Merkez",
+    "phone": "0532 000 00 03",
+    "note": "Kendi ulaşımım var, Ören ve Kaledran tarafına gidebilirim.",
+    "created_at": "2026-07-08T12:53:52.990243+00:00"
+  },
+  {
+    "id": "9e1ad7f9-1c6f-4eb7-a67b-04ff4927ca0a",
+    "name": "Ahmet Yılmaz",
+    "work_types": [
+      "Sera İşleri"
+    ],
+    "experience": null,
+    "available_from": "2026-07-22",
+    "expected_wage": "3000",
+    "location": "Merkez",
+    "phone": "0505 000 00 00 ",
+    "note": null,
+    "created_at": "2026-07-08T13:04:51.178378+00:00"
+  },
+  {
+    "id": "1db94e3c-1fe6-4b72-a49e-8e3ba1bce4af",
+    "name": "Ali Yılmaz",
+    "work_types": [
+      "Bakım / İlaçlama"
+    ],
+    "experience": null,
+    "available_from": "2026-07-21",
+    "expected_wage": "3000",
+    "location": "Bozyazı",
+    "phone": "0505 001 2020",
+    "note": null,
+    "created_at": "2026-07-08T13:05:27.148509+00:00"
+  },
+  {
+    "id": "94405336-20c5-4b4e-9dff-0d1480b8d470",
+    "name": "Sera bekçisi aile",
+    "work_types": [
+      "Sera İşleri"
+    ],
+    "experience": null,
+    "available_from": "2026-07-08",
+    "expected_wage": null,
+    "location": "Anamur Merkez",
+    "phone": " 05323031120",
+    "note": null,
+    "created_at": "2026-07-08T14:08:36.046822+00:00"
+  },
+  {
+    "id": "9114997f-3ea6-41e4-b50f-55de1e5d6c4f",
+    "name": "Muz bağlama",
+    "work_types": [
+      "Sera İşleri"
+    ],
+    "experience": null,
+    "available_from": "2026-07-08",
+    "expected_wage": null,
+    "location": "Anamur Merkez",
+    "phone": "05072558930",
+    "note": "Anamur İçi Muz Bağlaması Yapılır",
+    "created_at": "2026-07-08T14:11:29.188014+00:00"
+  },
+  {
+    "id": "d0181002-1f21-4457-8ab7-62403a666136",
+    "name": "Fide yeri hazırlama",
+    "work_types": [
+      "Dikim"
+    ],
+    "experience": null,
+    "available_from": "2026-07-08",
+    "expected_wage": null,
+    "location": "Anamur ",
+    "phone": "05468990939",
+    "note": null,
+    "created_at": "2026-07-08T14:15:52.027039+00:00"
+  },
+  {
+    "id": "2be59ad5-1d30-499c-b87f-cca7533df01b",
+    "name": "Dikim yapılır",
+    "work_types": [
+      "Dikim"
+    ],
+    "experience": null,
+    "available_from": "2026-07-08",
+    "expected_wage": null,
+    "location": "Anamur",
+    "phone": "05056784756",
+    "note": null,
+    "created_at": "2026-07-08T14:17:15.24431+00:00"
+  },
+  {
+    "id": "1ea3a6c9-c1f5-43ad-a965-5b5e33a0eaa1",
+    "name": " fida ayarı kesme bağlama gövde göçürme",
+    "work_types": [
+      "Sera İşleri"
+    ],
+    "experience": null,
+    "available_from": null,
+    "expected_wage": null,
+    "location": "Anamur",
+    "phone": "05514670522",
+    "note": " fida ayarı kesme bağlama gövde göçürme",
+    "created_at": "2026-07-08T14:24:03.827712+00:00"
+  },
+  {
+    "id": "af30f8f8-9f9a-42ad-884c-a4fe1205e63f",
+    "name": "Muz bağlaması yapılır",
+    "work_types": [
+      "Sera İşleri"
+    ],
+    "experience": null,
+    "available_from": null,
+    "expected_wage": null,
+    "location": "Anamur",
+    "phone": "05072558930",
+    "note": null,
+    "created_at": "2026-07-08T14:26:26.538294+00:00"
+  }
+]
