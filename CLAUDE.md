@@ -59,7 +59,8 @@ spam/istismar etkisini düşün.
    başına günlük ilan limiti, 24 saat içinde aynı başlık+telefon
    tekrarını reddet, metinlerde URL engelle. + "Şikayet et" düğmesi
    (`reports` tablosu).
-2. **İlan süresi:** 14 gün sonra ilanların listeden düşmesi (varsayılan
-   2 hafta olarak kararlaştırıldı).
-3. İleride gerekirse: Cloudflare Turnstile (bot artarsa), telefonla
+2. İleride gerekirse: Cloudflare Turnstile (bot artarsa), telefonla
    giriş / Supabase Auth (istismar büyürse; SMS maliyetli, aceleye gerek yok).
+
+Yapıldı: 14 günlük ilan süresi (`AD_LIFETIME_DAYS`, app.js) — ilanlar
+listeden düşer, veri silinmez.
