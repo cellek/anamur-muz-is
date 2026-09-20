@@ -145,9 +145,12 @@ class Handler(SimpleHTTPRequestHandler):
         if length <= 0 or length > 100_000:
             return None
         try:
-            return json.loads(self.rfile.read(length).decode("utf-8"))
+            payload = json.loads(self.rfile.read(length).decode("utf-8"))
         except (ValueError, UnicodeDecodeError):
             return None
+        # Yalnız JSON nesnesi kabul edilir; dizi/metin/sayı gövdeler
+        # validate() içinde .get() çağrısını patlatırdı.
+        return payload if isinstance(payload, dict) else None
 
     def do_GET(self):
         path = self.path.split("?")[0]
