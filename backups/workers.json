@@ -125,5 +125,40 @@
     "phone": "05072558930",
     "note": null,
     "created_at": "2026-07-08T14:26:26.538294+00:00"
+  },
+  {
+    "id": "bc6b5eca-7dc4-43de-a05d-a7b0aae105b2",
+    "name": "Ali karip ",
+    "work_types": [
+      "Hasat",
+      "Dikim",
+      "Bakım / İlaçlama",
+      "Sera İşleri"
+    ],
+    "experience": "30",
+    "available_from": null,
+    "expected_wage": "90.000",
+    "location": "Anamur merkez",
+    "phone": "+905438747358",
+    "note": "Anamur ",
+    "created_at": "2026-10-27T11:07:03.404515+00:00"
+  },
+  {
+    "id": "218e1790-b9ae-4e11-973c-5eef530c9f04",
+    "name": "Ali karip ",
+    "work_types": [
+      "Hasat",
+      "Dikim",
+      "Bakım / İlaçlama",
+      "Sera İşleri",
+      "Diğer"
+    ],
+    "experience": "30",
+    "available_from": "1971-01-01",
+    "expected_wage": "70 ",
+    "location": "Manavgat / Anamur ",
+    "phone": "+905438747358",
+    "note": "Manavgat Anamur ",
+    "created_at": "2026-10-27T12:30:15.236912+00:00"
   }
 ]
